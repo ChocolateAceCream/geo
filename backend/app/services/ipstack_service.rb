@@ -1,36 +1,26 @@
-require 'httparty'
+class IpstackService
+  include GeolocationServiceInterface
 
-class IpstackService < GeolocationService
-  include HTTParty
-  base_uri 'http://api.ipstack.com'
-
-  def initialize
-    @access_key = ENV['IPSTACK_ACCESS_KEY']
+  def initialize(api_key = ENV['IPSTACK_ACCESS_KEY'])
+    @api_key = api_key
   end
 
-  def fetch_geolocation(ip_or_hostname)
-    response = self.class.get("/#{ip_or_hostname}?access_key=#{@access_key}")
-
+  def fetch_geolocation(host)
+    # Assuming HTTParty or some other HTTP client is used here
+    response = HTTParty.get("http://api.ipstack.com/#{host}?access_key=#{@api_key}")
     if response.success?
-      parsed_response = JSON.parse(response.body)
-      format_response(parsed_response)
+      parse_response(response)
     else
-      if response.body.empty?
-        raise "Error fetching geolocation data: #{response.message || 'Unknown error'}"
-      else
-        parsed_response = JSON.parse(response.body)
-        error_message = parsed_response['error'] || response.message || "Unknown error"
-        raise "Error fetching geolocation data: #{error_message}"
-      end
+      return nil
     end
   end
 
   private
 
-  def format_response(response)
+  def parse_response(response)
+    # Parse the response and map it to your application's data structure
     {
       ip: response['ip'],
-      hostname: response['hostname'],
       type: response['type'],
       continent_code: response['continent_code'],
       continent_name: response['continent_name'],
@@ -42,22 +32,38 @@ class IpstackService < GeolocationService
       zip: response['zip'],
       latitude: response['latitude'],
       longitude: response['longitude'],
-      location: {
-        geoname_id: response.dig('location', 'geoname_id'),
-        capital: response.dig('location', 'capital'),
-        country_flag: response.dig('location', 'country_flag'),
-        country_flag_emoji: response.dig('location', 'country_flag_emoji'),
-        country_flag_emoji_unicode: response.dig('location', 'country_flag_emoji_unicode'),
-        calling_code: response.dig('location', 'calling_code'),
-        is_eu: response.dig('location', 'is_eu')
-      },
-      time_zone: {
-        id: response.dig('time_zone', 'id'),
-        current_time: response.dig('time_zone', 'current_time'),
-        gmt_offset: response.dig('time_zone', 'gmt_offset'),
-        code: response.dig('time_zone', 'code'),
-        is_daylight_saving: response.dig('time_zone', 'is_daylight_saving')
-      }
+      msa: response['msa'],
+      dma: response['dma'],
+      radius: response['radius'],
+      ip_routing_type: response['ip_routing_type'],
+      connection_type: response['connection_type'],
+      location: parse_location(response['location']),
     }
   end
+
+  def parse_location(location_data)
+    {
+      geoname_id: location_data['geoname_id'],
+      capital: location_data['capital'],
+      country_flag: location_data['country_flag'],
+      country_flag_emoji: location_data['country_flag_emoji'],
+      country_flag_emoji_unicode: location_data['country_flag_emoji_unicode'],
+      calling_code: location_data['calling_code'],
+      is_eu: location_data['is_eu'],
+      languages: location_data['languages'].map { |lang| parse_language(lang) }
+    }
+  end
+
+  def parse_language(language_data)
+    {
+      code: language_data['code'],
+      name: language_data['name'],
+      native: language_data['native']
+    }
+  end
+
+  # def handle_error(response)
+  #   # Handle errors, perhaps raising a custom exception
+  #   raise StandardError, "Failed to fetch geolocation: #{response['error']['info']}"
+  # end
 end

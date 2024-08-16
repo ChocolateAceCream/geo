@@ -1,19 +1,24 @@
 class GeolocationsController < ApplicationController
+  include HostUtils
+
   def create
-    geolocation_service = IpstackService.new()
-    geo_data = geolocation_service.fetch_geolocation(params[:ip_address])
+    geolocation_service = GeolocationServiceManager.new
+    host = params.dig(:data, :host)
 
-    geolocation = Geolocation.new(geo_data)
+    geolocation = geolocation_service.create_or_update(host)
 
-    if geolocation.save
+    if geolocation
       render json: geolocation, status: :created
     else
-      render json: geolocation.errors, status: :unprocessable_entity
+      render json: { error: "Failed to save geolocation data" }, status: :unprocessable_entity
     end
   end
 
   def show
-    geolocation = Geolocation.find_by(ip: params[:id]) || Geolocation.find_by(hostname: params[:id])
+    host = format_host(@query_params['host'])
+    return render json: { error: "Invalid or missing host" }, status: :bad_request if host.nil?
+
+    geolocation = Geolocation.find_by(host: host)
 
     if geolocation
       render json: geolocation
@@ -23,7 +28,9 @@ class GeolocationsController < ApplicationController
   end
 
   def destroy
-    geolocation = Geolocation.find_by(ip: params[:id]) || Geolocation.find_by(hostname: params[:id])
+    host = format_host(@query_params['host'])
+    return render json: { error: "Invalid or missing host" }, status: :bad_request if host.nil?
+    geolocation = Geolocation.find_by(host: host)
 
     if geolocation
       geolocation.destroy

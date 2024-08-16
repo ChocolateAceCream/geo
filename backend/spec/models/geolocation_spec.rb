@@ -8,7 +8,7 @@ RSpec.describe Geolocation, type: :model do
 
   # Test for fields
   it { is_expected.to have_field(:ip).of_type(String) }
-  it { is_expected.to have_field(:hostname).of_type(String) }
+  it { is_expected.to have_field(:host).of_type(String) }
   it { is_expected.to have_field(:type).of_type(String) }
   it { is_expected.to have_field(:continent_code).of_type(String) }
   it { is_expected.to have_field(:continent_name).of_type(String) }
@@ -26,6 +26,5 @@ RSpec.describe Geolocation, type: :model do
   it { is_expected.to embed_one(:time_zone) }
 
   # Test for indexes
-  it { is_expected.to have_index_for(ip: 1).with_options(unique: true) }
-  it { is_expected.to have_index_for(hostname: 1).with_options(unique: true, sparse: true) }
+  it { is_expected.to have_index_for(hostname: 1).with_options(unique: true) }
 end

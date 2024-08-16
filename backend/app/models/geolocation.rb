@@ -1,9 +1,10 @@
 class Geolocation
   include Mongoid::Document
   include Mongoid::Timestamps
+  include Mongoid::Attributes::Dynamic
 
   field :ip, type: String
-  field :hostname, type: String
+  field :host, type: String
   field :type, type: String
   field :continent_code, type: String
   field :continent_name, type: String
@@ -17,10 +18,10 @@ class Geolocation
   field :longitude, type: Float
 
   embeds_one :location
-  embeds_one :time_zone
 
-  index({ ip: 1 }, { unique: true })   # Index to ensure unique IP addresses
-  index({ hostname: 1 }, { unique: true, sparse: true }) # Sparse index for hostname, if present
+  index({ host: 1 }, { unique: true})
+
+  validates :host, uniqueness: { allow_blank: false }
 end
 
 
@@ -47,16 +48,4 @@ class Language
   field :native, type: String
 
   embedded_in :location
-end
-
-class TimeZone
-  include Mongoid::Document
-
-  field :id, type: String
-  field :current_time, type: DateTime
-  field :gmt_offset, type: Integer
-  field :code, type: String
-  field :is_daylight_saving, type: Boolean
-
-  embedded_in :geolocation
 end
