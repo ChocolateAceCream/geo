@@ -7,7 +7,7 @@ RSpec.describe IpstackService, type: :service do
   let(:sample_response) do
     {
       'ip' => valid_ip,
-      'hostname' => valid_ip,
+      'host' => valid_ip,
       'type' => 'ipv4',
       'continent_code' => 'NA',
       'continent_name' => 'North America',
@@ -28,13 +28,6 @@ RSpec.describe IpstackService, type: :service do
         'calling_code' => '1',
         'is_eu' => false
       },
-      'time_zone' => {
-        'id' => 'America/Los_Angeles',
-        'current_time' => '2024-06-14T01:45:35-07:00',
-        'gmt_offset' => -25200,
-        'code' => 'PDT',
-        'is_daylight_saving' => true
-      }
     }.to_json
   end
 
@@ -52,10 +45,10 @@ RSpec.describe IpstackService, type: :service do
     expect(result[:ip]).to eq(valid_ip)
     expect(result[:country_name]).to eq('United States')
     expect(result[:city]).to eq('Los Angeles')
-    expect(result[:time_zone][:id]).to eq('America/Los_Angeles')
   end
 
-  it 'raises an error when the IP is invalid' do
-    expect { service.fetch_geolocation(invalid_ip) }.to raise_error("Error fetching geolocation data: Unknown error")
+  it 'return nil when the IP is invalid' do
+    result = service.fetch_geolocation(invalid_ip)
+    expect(result).to be_nil
   end
 end

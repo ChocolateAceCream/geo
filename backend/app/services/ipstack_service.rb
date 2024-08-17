@@ -50,7 +50,6 @@ class IpstackService
       country_flag_emoji_unicode: location_data['country_flag_emoji_unicode'],
       calling_code: location_data['calling_code'],
       is_eu: location_data['is_eu'],
-      languages: location_data['languages'].map { |lang| parse_language(lang) }
     }
   end
 

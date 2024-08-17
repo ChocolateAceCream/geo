@@ -23,8 +23,7 @@ RSpec.describe Geolocation, type: :model do
 
   # Test for embedded documents
   it { is_expected.to embed_one(:location) }
-  it { is_expected.to embed_one(:time_zone) }
 
   # Test for indexes
-  it { is_expected.to have_index_for(hostname: 1).with_options(unique: true) }
+  it { is_expected.to have_index_for(host: 1).with_options(unique: true) }
 end

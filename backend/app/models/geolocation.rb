@@ -36,16 +36,6 @@ class Location
   field :calling_code, type: String
   field :is_eu, type: Boolean
 
-  embeds_many :languages
   embedded_in :geolocation
 end
 
-class Language
-  include Mongoid::Document
-
-  field :code, type: String
-  field :name, type: String
-  field :native, type: String
-
-  embedded_in :location
-end
