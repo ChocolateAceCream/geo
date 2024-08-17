@@ -1,2 +1,4 @@
 backend/.env
-docker/mongo/data/*
+docker/mongo-data/*
+docker/mongo-init/*
+docker/log/*

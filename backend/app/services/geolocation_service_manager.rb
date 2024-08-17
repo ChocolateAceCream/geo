@@ -8,8 +8,9 @@ class GeolocationServiceManager
   def create_or_update(input)
     host = format_host(input)
     return nil if host.nil?
-
+    puts "host: #{host}"
     geo_data = @service.fetch_geolocation(host)
+    puts "geo_data: #{geo_data}"
     return nil if geo_data.nil?
 
     geo_data[:host] = host

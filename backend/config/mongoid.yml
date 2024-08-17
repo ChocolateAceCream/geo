@@ -32,10 +32,10 @@ development:
         #     - use: web
 
         # The name of the user for authentication.
-        user: 'root'
+        user: <%= ENV['MONGODB_USER'] %>
 
         # The password of the user for authentication.
-        password: '123qwe'
+        password: <%= ENV['MONGODB_PASSWORD'] %>
 
         # The user's database roles.
         # roles:
@@ -183,6 +183,19 @@ test:
         read:
           mode: :primary
         max_pool_size: 1
-        user: root
-        password: 123qwe
+        user: <%= ENV['MONGODB_USER'] %>
+        password: <%= ENV['MONGODB_PASSWORD'] %>
+        auth_source: admin
+production:
+  clients:
+    default:
+      database: geo_production
+      hosts:
+        -  <%= ENV['MONGODB_HOST'] %>
+      options:
+        read:
+          mode: :primary
+        max_pool_size: 1
+        user: <%= ENV['MONGODB_USER'] %>
+        password: <%= ENV['MONGODB_PASSWORD'] %>
         auth_source: admin

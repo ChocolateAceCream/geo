@@ -8,7 +8,8 @@ class IpstackService
   def fetch_geolocation(host)
     # Assuming HTTParty or some other HTTP client is used here
     response = HTTParty.get("http://api.ipstack.com/#{host}?access_key=#{@api_key}")
-    if response.success?
+    puts "response: #{response}"
+    if response.success? && response.parsed_response['success'] != false
       parse_response(response)
     else
       return nil

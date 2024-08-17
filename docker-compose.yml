@@ -1,0 +1,26 @@
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./docker/mongo-data:/data/db
+      - ./docker/mongo-init:/docker-entrypoint-initdb.d
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123qwe
+  backend:
+    build: .
+    container_name: geo-backend
+    volumes:
+      - ./docker/log:/app/log
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      IPSTACK_ACCESS_KEY: '951410761e5cf6d0bbb258ae6e12c269'
+      MONGODB_USER: 'root'
+      MONGODB_PASSWORD: '123qwe'
+      MONGODB_HOST: 'mongo:27017'

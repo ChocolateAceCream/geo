@@ -19,7 +19,7 @@ module HostUtils
   def extract_hostname(host)
     # Extract the hostname if the host is a valid URL
     # # Add a scheme if it's missing
-    host = "http://#{host}" unless host =~ /\Ahttps?:\/\//
+    host = "http://#{host}" unless host =~ /\A[A-Za-z][A-Za-z0-9+\-.]*:\/\//
     uri = URI.parse(host)
     uri.host || host if uri.scheme
   rescue URI::InvalidURIError
