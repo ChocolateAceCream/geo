@@ -3,7 +3,7 @@ services:
     image: mongo:latest
     container_name: mongodb
     ports:
-      - "27017:27017"
+      - "27777:27017"
     volumes:
       - ./docker/mongo-data:/data/db
       - ./docker/mongo-init:/docker-entrypoint-initdb.d
@@ -24,3 +24,4 @@ services:
       MONGODB_USER: 'root'
       MONGODB_PASSWORD: '123qwe'
       MONGODB_HOST: 'mongo:27017'
+      SECRET_KEY_BASE: '602cb01b93a953b83a58f52bbe0c18c8e5988382ad6927da326db722e345c0b1ae30abeb051d93d1ee56d612cdbb51473b6d5a93260c891baa665f8adc8145ab'
