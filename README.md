@@ -40,3 +40,25 @@ TDD is common approach in rails. Remember when I first learning rails, every boo
 Setup rspec with mongoid-rspec gem and mongoid is straightforward. Only thing I noticed is that rspec is using ruby 2.7 right now.
 
 Pretty much setup everything today, let's call it a night
+
+## 2024-08-16
+Plan for today
+- [x] geolocation api endpoint (get, post, delete)
+- [x] testing and test data preparation
+- [ ] documentation
+- [ ] docker
+
+I don't plan to implement auth, that's something api gateway should do.
+
+After writing go for years and switch back to ruby, I now appreciate how go handle errors. The way go handle errors forced developers to think ahead of the logic implementation and deal with error first.
+
+Back to the system design. I think a tricky question I faced right now is how to deal with ip and hostname. There might be a chance that different hostname (like sub domain) may point to the same ip address. I have two options to handle this situation:
+1. use an array to hold all hostname that point to that ip address. However, I need to be careful when add new record with hostname, I will need to remove that hostname from any existing record's hostname array first (if ip is not the same).
+2. add a new field 'host', which can either be ip or hostname.
+First approach will save storage space but add computation overhead, second one is versa vice
+
+I will go with second approach for now, since it's logic is more straightforward.
+
+After setup some test cases and endpoints, the project functionality almost done!
+
+Gonna finish the document and deployment tomorrow. After all, it's Friday night!
